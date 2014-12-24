@@ -7,7 +7,7 @@ client_id = '3272315213.3280099727'
 client_secret = '210be9038f11fa17e3849e577a20d8ac'
 
 redirect_uri = 'http://127.0.0.1/app'
-#12345 проверка 
+
 @application.route("/")
 def index():
     url = 'https://slack.com/oauth/authorize'
