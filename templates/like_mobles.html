@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title>Like mobile</title>
+	<link rel="stylesheet" href="css/style.css">
+	{% for mobile in mobiles %}
+    <ul>
+        <li>
+            {{mobile.firm}}
+            <br>
+            {{mobile.model}}
+            <br>
+            {{mobile.description}}
+        </li>
+
+    </ul>
+    {% endfor %}
+</head>
+<body>
+
+
+  <form method="post" action=/SignIn class="login">
+	
+    
+
+  </form>
+</body>
+</html>

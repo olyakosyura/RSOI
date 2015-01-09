@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title>mobiles catalog</title>
+	<link rel="stylesheet" href="css/style.css">
+
+	 
+</head>
+<body>
+<form method="post" action=/catalog class="login">
+     {% for mobile in mobiles %}
+        <ul>
+            <li>
+                {{mobile.firm}}
+                <br>
+                {{mobile.model}}
+                <br>
+                {{mobile.color}}
+                <br>
+                {{mobile.cost|string}}
+                <br>
+                {{mobile.description}}
+            </li>
+        </ul>
+        {% endfor %}
+        <br>
+        Page: {{page}}
+        <br>
+        <input type="submit" value="Prev" name="prev">
+        <input type="submit" value="Next" name="next">
+
+  </form>
+
+ 
+</body>
+</html>
