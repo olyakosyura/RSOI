@@ -218,6 +218,7 @@ def user_by_id_request(_id):
 @app.route("/mobile", methods=['GET'])
 def mobile_request():
     try:
+	
         page = request.headers.get('page')
         page = page if page else 1
         total = db_worker.get_count_records_in_table("data_mobile")
