@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
-import db
-from flask import Flask, request, render_template, redirect
-import json
+from flask import Flask
+from flask import request
+from flask import render_template
+from flask import redirect
 from sqlite3 import Error
-import helper
 from time import ctime
+import json
+import db
+import helper
 
 
 app = Flask(__name__)
@@ -12,9 +14,9 @@ app = Flask(__name__)
 
 @app.route("/")
 def homepage():
-    view =  "<a href='http://localhost:65010/login'>Login</a><br>"
-    view += "<a href='http://localhost:65010/register'>Registration</a><br>"
-    view += "<a href='http://localhost:65010/status'>Status</a><br>"
+    view =  "<a href='http://localhost:65010/login'>Sign In</a><br>"
+    view += "<a href='http://localhost:65010/register'>Sign Up</a><br>"
+    view += "<a href='http://localhost:65010/status'>Who I am?</a><br>"
     view += "<a href='http://localhost:65010/logout'>Logout</a><br>"
     return view
 
@@ -87,17 +89,20 @@ def oauth_authorize():
             client_id = request.args.get('client_id')
             if db_worker.check_user_and_client_id(login, client_id):
                 state = request.args.get('state')
+		if not state:
+                    return json.dumps({'error': "state is null"})
                 uri = request.args.get('redirect_uri')
+
                 if not uri:
                     return json.dumps({'error': "redirect_uri is null"})
                 code = helper.generate_random_code()
                 exp_time = helper.get_exp_time_for_code()
                 db_worker.add_to_data_code(login, client_id, code, exp_time, uri)
-                uri = uri+"?code={0}".format(code)
+                uri = "http://"+uri+"?code={0}".format(code)
                 if state:
                     uri += "&state={0}".format(state)
                 return redirect(uri)
-        return json.dumps({'error': "access denied"})
+        return redirect("/login")
 
     except Error as e:
         return str(e)
@@ -189,7 +194,7 @@ def me_request():
 @app.route("/users", methods=['GET'])
 def users_request():
     try:
-        page = request.headers.get('page')
+        page = request.args.get('page')
         page = page if page else 1
         total = db_worker.get_count_records_in_table("data_user")
         result = db_worker.get_all_users(page)
@@ -219,7 +224,7 @@ def user_by_id_request(_id):
 def mobile_request():
     try:
 	
-        page = request.headers.get('page')
+        page = request.args.get('page')
         page = page if page else 1
         total = db_worker.get_count_records_in_table("data_mobile")
         result = process_request(request, db_worker.get_all_mobile, page)
