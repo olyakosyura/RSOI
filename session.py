@@ -9,7 +9,7 @@ from connection import ConnectionInfo, Connections
 app = Flask(__name__)
 
 
-@app.route("/SignIn")
+@app.route("/login")
 def login():
     try:
         if not check_arguments(['login', 'password'], request.args):

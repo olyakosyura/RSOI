@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 class ConnectionInfo:
     def __init__(self, login_str, code_str):
         self.login = login_str

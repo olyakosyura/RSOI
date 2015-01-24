@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 
-def get_layer_url(url_part):
+def get_logic_url(url_part):
     return "http://localhost:65014/" + url_part
 
 
@@ -28,21 +28,21 @@ def clear_data_in_cookies():
 @app.route("/")
 def home():
     if not ('login' in session and 'code' in session):
-        return render_template("signin.html")
+        return render_template("login_form.html")
 
-    return render_template("main.html")
+    return render_template("main_form.html")
 
 
-@app.route("/SignIn", methods=['POST'])
+@app.route("/login", methods=['POST'])
 def login():
     if 'reg' in request.form:
-        return render_template("SignUp.html")
+        return render_template("registration_form.html")
 
     if not ('login' in session and 'code' in session):
         login = request.form["login"]
         password = request.form["pwd"]
 
-        url = get_layer_url("login") + "?login={0}&password={1}".format(login, password)
+        url = get_logic_url("login") + "?login={0}&password={1}".format(login, password)
 
         result = requests.get(url).json()
 
@@ -52,13 +52,13 @@ def login():
         session.permanent = True
         set_data_to_cookies(login, result['code'])
 
-    return render_template("main.html")
+    return render_template("main_form.html")
 
 
 @app.route("/logout")
 def logout():
     login, code = get_data_from_cookies()
-    url = get_layer_url("logout") + "?login={0}&code={1}".format(login, code)
+    url = get_logic_url("logout") + "?login={0}&code={1}".format(login, code)
 
     result = requests.get(url).json()
 
@@ -67,20 +67,22 @@ def logout():
 
     clear_data_in_cookies()
 
-    return render_template("SignIn.html")
+    return render_template("login_form.html")
 
 
-@app.route("/SignUp", methods=['POST'])
-def SignUp():
+@app.route("/registration", methods=['POST'])
+def registration():
     login = request.form['login']
     first = request.form['first']
+    second = request.form['second']
     email = request.form['email']
     like = request.form['like']
     my = request.form['my']
     password = request.form['password']
 
-    url = get_layer_url("add_user")
-    data = {'login': login, 'first': first, 'email': email, 'like': like, 'my': my, 'password': password}
+    url = get_logic_url("add_user")
+    data = {'login': login, 'first': first, 'second': second,
+            'email': email, 'like': like, 'my': my, 'password': password}
     headers = {'Content-type': 'application/json'}
 
     result = requests.post(url, data=json.dumps(data), headers=headers).json()
@@ -88,26 +90,26 @@ def SignUp():
     if 'error' in result:
         return result['error']
 
-    return render_template("SignIn.html")
+    return render_template("login_form.html")
 
 
 @app.route("/me")
 def me():
     login, code = get_data_from_cookies()
 
-    url = get_layer_url("me") + "?login={0}&code={1}".format(login, code)
+    url = get_logic_url("me") + "?login={0}&code={1}".format(login, code)
 
     result = requests.get(url).json()
 
     if 'error' in result:
         return result['error']
 
-    return render_template("me.html", user=result)
+    return render_template("me_form.html", user=result)
 
 
 @app.route("/remove_user")
 def remove_user():
-    url = get_layer_url("remove_user")
+    url = get_logic_url("remove_user")
     login, code = get_data_from_cookies()
     data = {'login': login, 'code': code}
     headers = {'Content-type': 'application/json'}
@@ -119,32 +121,33 @@ def remove_user():
 
     clear_data_in_cookies()
 
-    return render_template("SignIn.html")
+    return render_template("login_form.html")
 
 
 @app.route("/edit_user")
 def edit_user():
     login, code = get_data_from_cookies()
-    url = get_layer_url("get_user_info?login={0}&code={1}".format(login, code))
+    url = get_logic_url("get_user_info?login={0}&code={1}".format(login, code))
     result = requests.get(url).json()
 
     if 'error' in result:
         return result['error']
 
-    return render_template("edit_user.html", user=result)
+    return render_template("edit_user_form.html", user=result)
 
 
 @app.route("/update_user", methods=['POST'])
 def update_user():
     first = request.form['first']
+    second = request.form['second']
     email = request.form['email']
     like = request.form['like']
     my = request.form['my']
 
-    url = get_layer_url("update_user_info")
+    url = get_logic_url("update_user_info")
     login, code = get_data_from_cookies()
     data = {'login': login, 'code': code, 'first': first,
-            'email': email, 'like': like, 'my': my}
+            'second': second, 'email': email, 'like': like, 'my': my}
     headers = {'Content-type': 'application/json'}
 
     result = requests.put(url, data=json.dumps(data), headers=headers).json()
@@ -152,25 +155,25 @@ def update_user():
     if 'error' in result:
         return result['error']
 
-    return render_template("main.html")
+    return render_template("main_form.html")
 
 
 @app.route("/mobiles")
 def mobiles():
-    return render_template("mobiles.html")
+    return render_template("mobiles_form.html")
 
 
 @app.route("/show_mobiles", methods=['POST'])
 def show_mobiles():
     login, code = get_data_from_cookies()
     if 'like' in request.form:
-        url = get_layer_url("like_mobiles?login={0}&code={1}&id={2}".
+        url = get_logic_url("like_mobiles?login={0}&code={1}&id={2}".
                             format(login, code, request.form['_id']))
-        template = "like_mobiles.html"
+        template = "like_mobiles_form.html"
     else:
-        url = get_layer_url("my_mobiles?login={0}&code={1}&id={2}".
+        url = get_logic_url("my_mobiles?login={0}&code={1}&id={2}".
                             format(login, code, request.form['_id']))
-        template = "my_mobiles.html"
+        template = "my_mobiles_form.html"
 
     result = requests.get(url).json()
     if 'error' in result:
@@ -189,13 +192,13 @@ def catalog():
     else:
         page = 1
 
-    url = get_layer_url("catalog?page={0}".format(page))
+    url = get_logic_url("catalog?page={0}".format(page))
 
     result = requests.get(url).json()
     if 'error' in result:
         return result['error']
 
-    return render_template("catalog.html", mobiles=result, page=page)
+    return render_template("catalog_form.html", mobiles=result, page=page)
 
 
 if __name__ == "__main__":

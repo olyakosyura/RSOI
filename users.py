@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from flask import Flask, request
 from db import DBWorker, check_arguments
 import json
@@ -14,7 +13,7 @@ def me():
             raise Error("Bad arguments")
 
         login = request.args.get('login')
-        result = db_worker.get_data_user_by_login(login)
+        result = db_worker.get_user_data_by_login(login)
         if len(result) != 0:
             return json.dumps(result[0])
 
@@ -43,10 +42,12 @@ def add_login():
 def add_user():
     try:
         data_json = request.get_json()
-        if not check_arguments(['login', 'first', 'email', 'like', 'my'], data_json):
+        if not check_arguments(['login', 'first', 'second', 'age', 'city',
+                                'email', 'like', 'my'], data_json):
             raise Error("Bad arguments")
 
-        db_worker.insert_into_data_users_table(data_json['login'], data_json['first'], data_json['email'],
+        db_worker.insert_into_data_users_table(data_json['login'], data_json['first'], data_json['second'],
+                                               data_json['age'], data_json['city'], data_json['email'],
                                                data_json['like'], data_json['my'])
 
         return json.dumps({'ok': 'ok'})
@@ -89,11 +90,12 @@ def remove_user():
 def update_user():
     try:
         data_json = request.get_json()
-        if not check_arguments(['login', 'first',
+        if not check_arguments(['login', 'first', 'second', 'age', 'city',
                                 'email', 'like', 'my'], data_json):
             raise Error("Bad arguments")
 
-        db_worker.update_data_users_table(data_json['login'], data_json['first'], data_json['email'],
+        db_worker.update_data_users_table(data_json['login'], data_json['first'], data_json['second'],
+                                          data_json['age'], data_json['city'], data_json['email'],
                                           data_json['like'], data_json['my'])
 
         return json.dumps({'ok': 'ok'})
@@ -105,7 +107,7 @@ def update_user():
 @app.route("/user/<_id>")
 def user_info(_id):
     try:
-        result = db_worker.get_data_user_by_id(_id)
+        result = db_worker.get_user_data_by_id(_id)
         if len(result) != 0:
             return json.dumps(result[0])
 
@@ -130,6 +132,9 @@ def login_to_id():
 
     except Error as e:
         return json.dumps({'error': str(e)})
+
+		
+
 
 
 if __name__ == "__main__":

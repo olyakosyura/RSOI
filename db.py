@@ -42,18 +42,19 @@ class DBWorker:
         query = "DELETE FROM data_login WHERE login='{0}'".format(login)
         return self.execute_query(query)
 
-    def insert_into_data_users_table(self, login, fname, email, like, my):
-        query = "INSERT INTO data_users VALUES (NULL, '{0}', '{1}', '{2}', {3}, '{4}')".\
-                format(login, fname, email, like, my)
+    def insert_into_data_users_table(self, login, fname, sname, age, city, email, like, my):
+        query = "INSERT INTO data_users VALUES (NULL, '{0}', '{1}', '{2}', {3}, '{4}', '{5}')".\
+                format(login, fname, sname, email, like, my)
         self.execute_query(query)
 
     def delete_from_data_users_table(self, login):
         query = "DELETE FROM data_users WHERE login='{0}'".format(login)
         return self.execute_query(query)
 
-    def update_data_users_table(self, login, fname, email, like, my):
-        query = "UPDATE data_users set firstname='{0}', email='{1}', like_mobiles='{2}', my_mobiles='{3}' " \
-                "where login='{4}'".format(fname, email, like, my, login)
+    def update_data_users_table(self, login, fname, sname, email, like, my):
+        query = "UPDATE data_users set firstname='{0}', secondname='{1}', email='{2}' " \
+				"like_mobiles='{3}', my_mobiles='{4}' " \
+                "where login='{5}'".format(fname, sname, email, like, my, login)
         return self.execute_query(query)
 
     def confirm_data_login(self, login, password):
@@ -63,13 +64,13 @@ class DBWorker:
         records = self.execute_query(query)
         return len(records) > 0
 
-    def get_data_user_by_id(self, _id):
-        query = "SELECT firstname, email, like_mobiles, my_mobiles" \
+    def get_user_data_by_id(self, _id):
+        query = "SELECT firstname, secondname, email, like_mobiles, my_mobiles" \
                 " FROM data_users WHERE id={0}".format(_id)
         return self.execute_and_return_json(query)
 
-    def get_data_user_by_login(self, login):
-        query = "SELECT firstname, email, like_mobiles, my_mobiles" \
+    def get_user_data_by_login(self, login):
+        query = "SELECT firstname, secondname, email, like_mobiles, my_mobiles" \
                 " FROM data_users WHERE login='{0}'".format(login)
         return self.execute_and_return_json(query)
 

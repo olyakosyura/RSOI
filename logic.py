@@ -24,7 +24,7 @@ def check_connection(login, code):
     return 'ok' in result
 
 
-@app.route("/SignIn")
+@app.route("/login")
 def login():
     try:
         if not check_arguments(['login', 'password'], request.args):
@@ -82,7 +82,7 @@ def me():
 def add_user():
     try:
         data_json = request.get_json()
-        if not check_arguments(['login', 'first',
+        if not check_arguments(['login', 'first', 'second',
                                 'like', 'email', 'my', 'password'], data_json):
             raise Exception("Bad arguments")
 
@@ -101,12 +101,13 @@ def add_user():
             raise Exception(result['error'])
 
         first = data_json['first']
+        second = data_json['second']
         email = data_json['email']
         like = data_json['like']
         my = data_json['my']
 
         url = get_users_url("add_user")
-        data = {'login': login, 'first': first, 'email': email, 'like': like, 'my': my}
+        data = {'login': login, 'first': first, 'second': second, 'email': email, 'like': like, 'my': my}
 
         result = requests.post(url, data=json.dumps(data), headers=headers)
         return result.text
@@ -179,7 +180,7 @@ def get_user_info():
 def update_user_info():
     try:
         data_json = request.get_json()
-        if not check_arguments(['login', 'first',
+        if not check_arguments(['login', 'first', 'second', 
                                 'like', 'email', 'my', 'code'], data_json):
             raise Exception("Bad arguments")
 
@@ -188,12 +189,13 @@ def update_user_info():
 
         if check_connection(login, code):
             first = data_json['first']
+            second = data_json['second']
             email = data_json['email']
             like = data_json['like']
             my = data_json['my']
 
             url = get_users_url("update_user")
-            data = {'login': login, 'first': first, 'email': email, 'like': like, 'my': my}
+            data = {'login': login, 'first': first, 'second': second, 'email': email, 'like': like, 'my': my}
             headers = {'Content-type': 'application/json'}
 
             result = requests.put(url, data=json.dumps(data), headers=headers)

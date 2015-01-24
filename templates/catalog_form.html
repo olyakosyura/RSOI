@@ -1,14 +1,12 @@
 <!DOCTYPE html>
+<html>
 <head>
-	<meta charset="utf-8">
-	<title>mobiles catalog</title>
-	<link rel="stylesheet" href="css/style.css">
-
-	 
+    <title>mobiles catalog</title>
+   
 </head>
 <body>
-<form method="post" action=/catalog class="login">
-     {% for mobile in mobiles %}
+ <form action=/catalog method="POST">
+        {% for mobile in mobiles %}
         <ul>
             <li>
                 {{mobile.firm}}
@@ -28,9 +26,6 @@
         <br>
         <input type="submit" value="Prev" name="prev">
         <input type="submit" value="Next" name="next">
-
-  </form>
-
- 
+    </form>
 </body>
 </html>

@@ -5,7 +5,6 @@ from sqlite3 import Error
 
 app = Flask(__name__)
 
-
 @app.route("/short_info")
 def short_info():
     try:
@@ -52,7 +51,6 @@ def get_all_mobiles():
 
     except Error as e:
         return json.dumps({'error': str(e)})
-
 
 if __name__ == "__main__":
     db_worker = DBWorker()
