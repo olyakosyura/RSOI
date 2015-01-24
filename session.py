@@ -4,7 +4,7 @@ from db import DBWorker, check_arguments
 from sqlite3 import Error
 from uuid import uuid4
 import json
-from connection import ConnectionInfo, Connections
+from connection import InfoConnect, Connect
 
 app = Flask(__name__)
 
@@ -20,11 +20,11 @@ def login():
 
         if db_worker.confirm_data_login(login, password):
             code = "".join(str(uuid4()).split('-'))
-            if connections.find(ConnectionInfo(login, code)):
+            if Connect.find(InfoConnect(login, code)):
                 raise Error("You logged already")
 
-            item = ConnectionInfo(login, code)
-            connections.add(item)
+            item = InfoConnect(login, code)
+            Connect.add(item)
             return json.dumps({'code': code})
 
         raise Error("No such login and password")
@@ -41,7 +41,7 @@ def logout():
 
         login = request.args.get("login")
         code = request.args.get("code")
-        if connections.remove(login, code):
+        if Connect.remove(login, code):
             return json.dumps({'ok': 'ok'})
 
         raise Error("You not logged yet")
@@ -50,15 +50,15 @@ def logout():
         return json.dumps({'error': str(e)})
 
 
-@app.route("/check_connection")
-def check_connection():
+@app.route("/check_connect")
+def check_connect():
     try:
         if not check_arguments(['login', 'code'], request.args):
             raise Exception("Bad arguments")
 
         login = request.args.get("login")
         code = request.args.get("code")
-        if connections.find(ConnectionInfo(login, code)):
+        if Connect.find(InfoConnect(login, code)):
             return json.dumps({'ok': 'ok'})
 
         raise Exception("Access denied")
@@ -69,6 +69,6 @@ def check_connection():
 
 if __name__ == "__main__":
     db_worker = DBWorker()
-    connections = Connections()
+    Connect = Connect()
     app.run(debug=True, port=65011)
 

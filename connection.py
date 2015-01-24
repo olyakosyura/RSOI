@@ -1,4 +1,4 @@
-class ConnectionInfo:
+class InfoConnect:
     def __init__(self, login_str, code_str):
         self.login = login_str
         self.code = code_str
@@ -7,23 +7,23 @@ class ConnectionInfo:
         return self.login == other.login and self.code == other.code
 
 
-class Connections:
+class Connect:
     def __init__(self):
-        self.connections = []
+        self.Connect = []
 
     def add(self, item):
-        self.connections.append(item)
+        self.Connect.append(item)
 
     def remove(self, login, code):
-        for element in self.connections:
+        for element in self.Connect:
             if element.login == login and element.code == code:
-                self.connections.remove(element)
+                self.Connect.remove(element)
                 return True
 
         return False
 
     def find(self, item):
-        for element in self.connections:
+        for element in self.Connect:
             if element == item:
                 return True
 

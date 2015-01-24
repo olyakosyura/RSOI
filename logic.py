@@ -18,8 +18,8 @@ def get_mobiles_url(url_part):
     return "http://localhost:65013/" + url_part
 
 
-def check_connection(login, code):
-    url = get_session_url("check_connection?login={0}&code={1}".format(login, code))
+def check_connect(login, code):
+    url = get_session_url("check_connect?login={0}&code={1}".format(login, code))
     result = requests.get(url).json()
     return 'ok' in result
 
@@ -67,7 +67,7 @@ def me():
         login = request.args.get('login')
         code = request.args.get('code')
 
-        if check_connection(login, code):
+        if check_connect(login, code):
             url = get_users_url("me") + "?login={0}".format(login)
             result = requests.get(url)
             return result.text
@@ -126,7 +126,7 @@ def remove_user():
         login = data_json['login']
         code = data_json['code']
 
-        if check_connection(login, code):
+        if check_connect(login, code):
             url = get_users_url("remove_login")
             data = {'login': login}
             headers = {'Content-type': 'application/json'}
@@ -159,7 +159,7 @@ def get_user_info():
         login = request.args.get('login')
         code = request.args.get('code')
 
-        if check_connection(login, code):
+        if check_connect(login, code):
             url = get_users_url("login_to_id") + "?login={0}".format(login)
             result = requests.get(url).json()
             if 'error' in result:
@@ -187,7 +187,7 @@ def update_user_info():
         login = data_json['login']
         code = data_json['code']
 
-        if check_connection(login, code):
+        if check_connect(login, code):
             first = data_json['first']
             second = data_json['second']
             email = data_json['email']
@@ -217,7 +217,7 @@ def like_mobiles():
         login = request.args.get('login')
         code = request.args.get('code')
 
-        if check_connection(login, code):
+        if check_connect(login, code):
             _id = request.args.get("id")
             url = get_users_url("user/{0}".format(_id))
 
@@ -251,7 +251,7 @@ def my_mobiles():
         login = request.args.get('login')
         code = request.args.get('code')
 
-        if check_connection(login, code):
+        if check_connect(login, code):
             url = get_users_url("login_to_id") + "?login={0}".format(login)
             result = requests.get(url).json()
             if 'error' in result:
