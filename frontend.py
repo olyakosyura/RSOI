@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, make_response
 import requests
 import json
 import os
@@ -43,7 +43,9 @@ def login():
         password = request.form["pwd"]
 
         url = get_logic_url("login") + "?login={0}&password={1}".format(login, password)
-
+        answer = requests.get('http://localhost:65014')
+        if answer.status_code == 400:
+            raise Exception('Bad request')
         result = requests.get(url).json()
 
         if 'error' in result:

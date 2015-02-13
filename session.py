@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, request
+from flask import Flask, request,make_response
 from db import DBWorker, check_arguments
 from sqlite3 import Error
 from uuid import uuid4
@@ -13,7 +13,7 @@ app = Flask(__name__)
 def login():
     try:
         if not check_arguments(['login', 'password'], request.args):
-            raise Error('Bad arguments')
+            raise Exception('Bad arguments')
 
         login = request.args.get('login')
         password = request.args.get('password')
@@ -21,33 +21,33 @@ def login():
         if db_worker.confirm_data_login(login, password):
             code = "".join(str(uuid4()).split('-'))
             if Connect.find(InfoConnect(login, code)):
-                raise Error("You logged already")
+                raise Exception("You logged already")
 
             item = InfoConnect(login, code)
             Connect.add(item)
             return json.dumps({'code': code})
 
-        raise Error("No such login and password")
+        raise Exception("No such login and password")
 
-    except Error as e:
-        return json.dumps({'error': str(e)})
+    except Exception as e:
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 
 @app.route("/logout")
 def logout():
     try:
         if not check_arguments(['login', 'code'], request.args):
-            raise Error("Bad arguments")
+            raise Exception("Bad arguments")
 
         login = request.args.get("login")
         code = request.args.get("code")
         if Connect.remove(login, code):
             return json.dumps({'ok': 'ok'})
 
-        raise Error("You not logged yet")
+        raise Exception("You not logged yet")
 
-    except Error as e:
-        return json.dumps({'error': str(e)})
+    except Exception as e:
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 
 @app.route("/check_connect")
@@ -64,8 +64,7 @@ def check_connect():
         raise Exception("Access denied")
 
     except Exception as e:
-        return json.dumps({'error': str(e)})
-
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 if __name__ == "__main__":
     db_worker = DBWorker()

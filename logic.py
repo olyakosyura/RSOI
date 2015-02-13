@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, make_response
 import requests
 import json
 from db import check_arguments
@@ -32,13 +32,15 @@ def login():
 
         login = request.args.get('login')
         password = request.args.get('password')
-
+        answer = requests.get('http://localhost:65011')
+        if answer.status_code == 400:
+            raise Exception('Bad request')
         url = get_session_url("login?login={0}&password={1}".format(login, password))
         result = requests.get(url)
         return result.text
 
     except Exception as e:
-        return json.dumps({'error': str(e)})
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 
 @app.route("/logout")
@@ -55,7 +57,7 @@ def logout():
         return result.text
 
     except Exception as e:
-        return json.dumps({'error': str(e)})
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 
 @app.route("/me")
@@ -75,7 +77,7 @@ def me():
         raise Exception("Access denied")
 
     except Exception as e:
-        return json.dumps({'error': str(e)})
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 
 @app.route("/add_user", methods=['POST'])
@@ -113,7 +115,7 @@ def add_user():
         return result.text
 
     except Exception as e:
-        return json.dumps({'error': str(e)})
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 
 @app.route("/remove_user", methods=['DELETE'])
@@ -147,7 +149,7 @@ def remove_user():
         raise Exception("Access denied")
 
     except Exception as e:
-        return json.dumps({'error': str(e)})
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 
 @app.route("/get_user_info")
@@ -173,14 +175,14 @@ def get_user_info():
         raise Exception("Access denied")
 
     except Exception as e:
-        return json.dumps({'error': str(e)})
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 
 @app.route("/update_user_info", methods=['PUT'])
 def update_user_info():
     try:
         data_json = request.get_json()
-        if not check_arguments(['login', 'first', 'second', 
+        if not check_arguments(['login', 'first', 'second',
                                 'like', 'email', 'my', 'code'], data_json):
             raise Exception("Bad arguments")
 
@@ -205,7 +207,7 @@ def update_user_info():
         raise Exception("Access denied")
 
     except Exception as e:
-        return json.dumps({'error': str(e)})
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 
 @app.route("/like_mobiles")
@@ -239,7 +241,7 @@ def like_mobiles():
         raise Exception("Access denied")
 
     except Exception as e:
-        return json.dumps({'error': str(e)})
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 
 @app.route("/my_mobiles")
@@ -280,7 +282,7 @@ def my_mobiles():
         raise Exception("Access denied")
 
     except Exception as e:
-        return json.dumps({'error': str(e)})
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 
 @app.route("/catalog")
@@ -296,7 +298,7 @@ def catalog():
         return result.text
 
     except Exception as e:
-        return json.dumps({'error': str(e)})
+        return make_response(str(e), 400, {'olol':'ololol'})
 
 
 if __name__ == "__main__":
