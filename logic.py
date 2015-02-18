@@ -32,11 +32,10 @@ def login():
 
         login = request.args.get('login')
         password = request.args.get('password')
-        answer = requests.get('http://localhost:65011')
-        if answer.status_code == 400:
-            raise Exception('Bad request')
         url = get_session_url("login?login={0}&password={1}".format(login, password))
         result = requests.get(url)
+        if result.status_code == 400:
+            raise Exception(result.text)
         return result.text
 
     except Exception as e:
@@ -54,6 +53,8 @@ def logout():
 
         url = get_session_url("logout?login={0}&code={1}".format(login, code))
         result = requests.get(url)
+        if result.status_code == 400:
+            raise Exception(result.text)
         return result.text
 
     except Exception as e:
@@ -72,6 +73,8 @@ def me():
         if check_connect(login, code):
             url = get_users_url("me") + "?login={0}".format(login)
             result = requests.get(url)
+            if result.status_code == 400:
+                raise Exception(result.text)
             return result.text
 
         raise Exception("Access denied")

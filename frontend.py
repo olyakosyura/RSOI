@@ -32,7 +32,7 @@ def home():
 
     return render_template("main_form.html")
 
-
+	
 @app.route("/login", methods=['POST'])
 def login():
     if 'reg' in request.form:
@@ -43,13 +43,10 @@ def login():
         password = request.form["pwd"]
 
         url = get_logic_url("login") + "?login={0}&password={1}".format(login, password)
-        answer = requests.get('http://localhost:65014')
-        if answer.status_code == 400:
-            raise Exception('Bad request')
-        result = requests.get(url).json()
-
-        if 'error' in result:
-            return result['error']
+        result = requests.get(url)
+        if result.status_code == 400:
+            return make_response(str(result.text), 400, {'olol':'ololol'})
+        result = result.json()
 
         session.permanent = True
         set_data_to_cookies(login, result['code'])
@@ -62,10 +59,10 @@ def logout():
     login, code = get_data_from_cookies()
     url = get_logic_url("logout") + "?login={0}&code={1}".format(login, code)
 
-    result = requests.get(url).json()
-
-    if 'error' in result:
-        return result['error']
+    result = requests.get(url)
+    if result.status_code == 400:
+        return make_response(str(result.text), 400, {'olol':'ololol'})
+    result = result.json()
 
     clear_data_in_cookies()
 
