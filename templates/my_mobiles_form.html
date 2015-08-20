@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My mobiles</title>
+    {% for mobile in mobiles %}
+    <ul>
+        <li>
+            {{mobile.firm}}
+            <br>
+            {{mobile.model}}
+            <br>
+            {{mobile.color}}
+            <br>
+            {{mobile.cost|string}}
+            <br>
+            {{mobile.description}}
+        </li>
+    </ul>
+    {% endfor %}
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Like mobiles</title>
+    {% for mobile in mobiles %}
+    <ul>
+        <li>
+            {{mobile.firm}}
+            <br>
+            {{mobile.model}}
+            <br>
+            {{mobile.description}}
+        </li>
+
+    </ul>
+    {% endfor %}
+</head>
+<body>
+
+</body>
+</html>
